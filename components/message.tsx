@@ -19,6 +19,7 @@ import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
 import type { UseChatHelpers } from '@ai-sdk/react';
+import ShoppingList from './shopping-list';
 
 const PurePreviewMessage = ({
   chatId,
@@ -56,7 +57,7 @@ const PurePreviewMessage = ({
             {
               'w-full': mode === 'edit',
               'group-data-[role=user]/message:w-fit': mode !== 'edit',
-            },
+            }
           )}
         >
           {message.role === 'assistant' && (
@@ -156,10 +157,10 @@ const PurePreviewMessage = ({
               if (type === 'tool-invocation') {
                 const { toolInvocation } = part;
                 const { toolName, toolCallId, state } = toolInvocation;
-
+                console.log('toolName', toolName);
                 if (state === 'call') {
                   const { args } = toolInvocation;
-
+                  console.log('args', args);
                   return (
                     <div
                       key={toolCallId}
@@ -183,6 +184,8 @@ const PurePreviewMessage = ({
                           args={args}
                           isReadonly={isReadonly}
                         />
+                      ) : toolName === 'createShoppingList' ? (
+                        <ShoppingList initialItems={args} />
                       ) : null}
                     </div>
                   );
@@ -190,7 +193,7 @@ const PurePreviewMessage = ({
 
                 if (state === 'result') {
                   const { result } = toolInvocation;
-
+                  console.log('result', result);
                   return (
                     <div key={toolCallId}>
                       {toolName === 'getWeather' ? (
@@ -212,6 +215,8 @@ const PurePreviewMessage = ({
                           result={result}
                           isReadonly={isReadonly}
                         />
+                      ) : toolName === 'createShoppingList' ? (
+                        <ShoppingList initialItems={result} />
                       ) : (
                         <pre>{JSON.stringify(result, null, 2)}</pre>
                       )}
@@ -248,7 +253,7 @@ export const PreviewMessage = memo(
     if (!equal(prevProps.vote, nextProps.vote)) return false;
 
     return true;
-  },
+  }
 );
 
 export const ThinkingMessage = () => {
@@ -267,7 +272,7 @@ export const ThinkingMessage = () => {
           'flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl',
           {
             'group-data-[role=user]/message:bg-muted': true,
-          },
+          }
         )}
       >
         <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">

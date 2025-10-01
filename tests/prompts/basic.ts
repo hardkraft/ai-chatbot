@@ -66,6 +66,32 @@ export const TEST_PROMPTS: Record<string, CoreMessage> = {
       },
     ],
   },
+  CREATE_SHOPPING_LIST_CALL: {
+    role: 'user',
+    content: [
+      {
+        type: 'text',
+        text: 'Create a shopping list for the following items: 2kg of apples, 1 bread, 1l of milk',
+      },
+    ],
+  },
+  CREATE_SHOPPING_LIST_RESULT: {
+    role: 'tool',
+    content: [
+      {
+        type: 'tool-result',
+        toolCallId: 'call_678',
+        toolName: 'createShoppingList',
+        result: {
+          id: '3ca386a4-40c6-4630-8ed1-84cbd46cc7eb',
+          title: 'Create a shopping list',
+          kind: 'text',
+          content: [{ item: 'apples', quantity: 2, purchased: false }, { item: 'bread', quantity: 1, purchased: false }, { item: 'milk', quantity: 1, purchased: false }],
+        },
+      },
+    ],
+  },
+
   GET_WEATHER_CALL: {
     role: 'user',
     content: [

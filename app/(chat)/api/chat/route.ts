@@ -36,6 +36,7 @@ import { after } from 'next/server';
 import type { Chat } from '@/lib/db/schema';
 import { differenceInSeconds } from 'date-fns';
 import { ChatSDKError } from '@/lib/errors';
+import { createShoppingList } from '@/lib/ai/tools/create-shopping-list';
 
 export const maxDuration = 60;
 
@@ -155,11 +156,12 @@ export async function POST(request: Request) {
             selectedChatModel === 'chat-model-reasoning'
               ? []
               : [
-                  'getWeather',
-                  'createDocument',
-                  'updateDocument',
-                  'requestSuggestions',
-                ],
+                'getWeather',
+                'createDocument',
+                'updateDocument',
+                'requestSuggestions',
+                'createShoppingList',
+              ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
           tools: {
@@ -170,6 +172,7 @@ export async function POST(request: Request) {
               session,
               dataStream,
             }),
+            createShoppingList,
           },
           onFinish: async ({ response }) => {
             if (session.user?.id) {
@@ -237,6 +240,9 @@ export async function POST(request: Request) {
     if (error instanceof ChatSDKError) {
       return error.toResponse();
     }
+
+    console.error('[chat][POST] Unexpected error:', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
 }
 
@@ -290,7 +296,7 @@ export async function GET(request: Request) {
   }
 
   const emptyDataStream = createDataStream({
-    execute: () => {},
+    execute: () => { },
   });
 
   const stream = await streamContext.resumableStream(
