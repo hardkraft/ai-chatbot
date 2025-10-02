@@ -6,14 +6,6 @@ type ShoppingItem = {
   purchased: boolean;
 };
 const ShoppingList = ({ initialItems }: { initialItems: ShoppingItem[] }) => {
-  const [items, setItems] = useState(initialItems);
-
-  const toggleStatus = (index: number) => {
-    const updated = [...items];
-    updated[index].purchased = !updated[index].purchased;
-    setItems(updated);
-  };
-
   return (
     <table cellPadding="8" style={{ borderCollapse: 'collapse' }}>
       <thead>
@@ -24,16 +16,12 @@ const ShoppingList = ({ initialItems }: { initialItems: ShoppingItem[] }) => {
         </tr>
       </thead>
       <tbody>
-        {items.map((item, idx) => (
+        {initialItems.map((item, idx) => (
           <tr key={idx}>
             <td>{item.name}</td>
             <td>{item.quantity}</td>
             <td>
-              <input
-                type="checkbox"
-                checked={item.purchased}
-                onChange={() => toggleStatus(idx)}
-              />
+              <input type="checkbox" />
             </td>
           </tr>
         ))}
